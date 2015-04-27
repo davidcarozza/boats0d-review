@@ -24,7 +24,7 @@ Summary
 -------
 
 BOATS is written in MATLAB version R2012a. Here we provide the
-functions and forcing data required to run BOATS. BOATS is implemented using a
+script, functions, and forcing data required to run BOATS. BOATS is implemented using a
 single MATLAB structure, named boats, that stores the model parameters, initial
 conditions, output, and diagnostics. The boats structure is passed among the
 various functions in order to set the model parameters, initialize the model
@@ -34,11 +34,11 @@ restart file, and make plots of model variables.
 Usage and examples
 ------------------
 
-Run the boats0d_main.m script in matlab as:
+To run the BOATS model, run the boats0d_main.m script in matlab as:
 
 boats0d_main
 
-To run the model at another ocean site, change the lat and lon parameters. For
+To change the ocean site at which the model is run, change the lat and lon parameters. For
 example, to run the model at a site in the Newtfoundland-Labrador Shelf Large
 Marine Ecosystem, change the lat and lon parameters in boats0d_main.m as:
 
@@ -46,7 +46,7 @@ lat = 138; lon = 310;
 
 To modify a parameter, use the boats_change_input.m function. For example, to
 apply a trophic efficiency of 0.15, add the following code after the first call
-to boats_change_input in boats0d_main:
+to boats_change_input.m in boats0d_main.m:
 
 boats = boats_change_input(boats,'te',0.15);
 
@@ -55,8 +55,8 @@ Files
 
 boats0d_main.m
 
-BOATS run script. Includes typical workflow from initialization
-to output and diagnostics. Calls functions that operate on the structure boats
+BOATS run script. Includes typical workflow from initialization, model integration,
+to output, diagnostics, and plots. Calls functions that operate on the structure boats.
 
 boats0d_parameters.m
 
@@ -65,7 +65,7 @@ Parameters are stored in the field boats.parameters
 
 boats_change_input.m
 
-Change a parameter value.
+Change parameter values.
 
 boats0d_initialize.m
 
@@ -73,17 +73,16 @@ Load restart file and initialize boats structure.
 
 boats0d_integrate.m
 
-Integrate BOATS in time and saves variables to boats structure.
+Integrate BOATS in time and save variables to boats structure.
 
 boats0d_save_restart.m
 
-Save final state of the fish biomass spectra and effort
-(if harvest on) in the boats.restart field, and save to a .mat restart file.
+Save final state of the fish biomass spectra (and effort) in the 
+boats.restart field, and save to a .mat restart file.
 
 boats0d_plot_base.m
 
-Plot fish and harvest (if harvest on) time series and equilibrium values of
-variables.
+Plot fish (and harvest) time series and equilibrium values of variables.
 
 boats0d_time_average.m
 
