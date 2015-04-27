@@ -34,7 +34,7 @@ restart file, and make plots of model variables.
 Usage and examples
 ------------------
 
-To run the BOATS model, run the boats0d_main.m script in matlab as:
+To run the BOATS model, run the boats0d_main.m script in Matlab as:
 
 boats0d_main
 
@@ -60,8 +60,8 @@ to output, diagnostics, and plots. Calls functions that operate on the structure
 
 boats0d_parameters.m
 
-Set the standard input parameters for boats structure.
-Parameters are stored in the field boats.parameters
+Set the standard input parameters for boats structure. Parameters are stored
+in the boats.parameters field.
 
 boats_change_input.m
 
@@ -78,7 +78,7 @@ Integrate BOATS in time and save variables to boats structure.
 boats0d_save_restart.m
 
 Save final state of the fish biomass spectra (and effort) in the 
-boats.restart field, and save to a .mat restart file.
+boats.restart field, and save to a restart file.
 
 boats0d_plot_base.m
 
@@ -87,12 +87,12 @@ Plot fish (and harvest) time series and equilibrium values of variables.
 boats0d_time_average.m
 
 Remove the time dimension for a run by averaging over a
-given time index range using generalmean.m - default is last time step.
+given time index range using generalmean.m - default is to use the last time step.
 
 boats0d_add_diagnostics.m
 
-Adds diagnostics to boats.diagnostics. These are usually scalar or small
-vector diagnostics that can be easily plotted in suites of runs
+Add diagnostics to boats.diagnostics. These are usually scalar or small
+vector diagnostics that can be easily plotted in suites of runs.
 
 sigmoid_And_length.m
 
@@ -111,20 +111,20 @@ Calculate the temporal mean of a variable. Used by boats0d_time_average.m
 parse_pv_pairs.m
 
 Parses sets of property value pairs, allows defaults. Used by
-boats0d_add_diagnostics.m, boats0d_parameters.m, boats0d_time_average.m
+boats0d_add_diagnostics.m, boats0d_parameters.m, and boats0d_time_average.m
 
 best_MCV2_P_S.mat
 
-Structure of biological parameters from best Monte Carlo
-simulation V2, Pearson and Spearman
+Matlab structure of biological parameters from best Monte Carlo
+simulation V2, Pearson and Spearman.
 
 catchability_forcing.mat
 
-Structure of catchability forcing scenarios
+Matlab structure of catchability forcing scenarios.
 
 price_forcing.mat
 
-Structure of price forcing scenarios
+Matlab structure of price forcing scenarios
 
 Licensing
 ---------
