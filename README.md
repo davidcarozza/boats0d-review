@@ -1,4 +1,5 @@
 boats0d-review
+--------------
 
 BOATS-1.0: The Bioeconomic Open Access Trophic Size-spectrum model. A
 bioenergetically-constrained coupled fisheries-economics model for global
@@ -14,30 +15,32 @@ Authors
 -------
 
 David A. Carozza  (david.carozza@gmail.com; corresponding author)
+
 Daniele Bianchi   (danbian@uw.edu)
+
 Eric D. Galbraith (eric.galbraith@mcgill.ca)
 
 Summary
 -------
 
-BOATS is written in MATLAB version R2012a. Here we provide a list of the
+BOATS is written in MATLAB version R2012a. Here we provide the
 functions and forcing data required to run BOATS. BOATS is implemented using a
 single MATLAB structure, named boats, that stores the model parameters, initial
 conditions, output, and diagnostics. The boats structure is passed among the
-various subroutines in order to set the model parameters, initialize the model
+various functions in order to set the model parameters, initialize the model
 from a restart state, integrate the model through time, save the output and a
 restart file, and make plots of model variables.
 
-Usage
------
+Usage and examples
+------------------
 
-Run the boats0d_main.m script in matlab by typing boats0d_main:
+Run the boats0d_main.m script in matlab as:
 
 boats0d_main
 
 To run the model at another ocean site, change the lat and lon parameters. For
-example, to run the model at a site in the Netfoundland-Labrador Shelf Large
-Marine Ecosystem, change the lat and lon parameters in boats0d_main as:
+example, to run the model at a site in the Newtfoundland-Labrador Shelf Large
+Marine Ecosystem, change the lat and lon parameters in boats0d_main.m as:
 
 lat = 138; lon = 310;
 
