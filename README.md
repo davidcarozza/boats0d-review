@@ -34,7 +34,7 @@ restart file, and make plots of model variables.
 Usage and examples
 ------------------
 
-To run the BOATS model, run the boats0d_main.m script in Matlab as:
+To run the BOATS model, run the boats0d_main.m script in MATLAB as:
 
 boats0d_main
 
@@ -115,16 +115,16 @@ boats0d_add_diagnostics.m, boats0d_parameters.m, and boats0d_time_average.m
 
 best_MCV2_P_S.mat
 
-Matlab structure of biological parameters from best Monte Carlo
+MATLAB structure of biological parameters from best Monte Carlo
 simulation V2, Pearson and Spearman.
 
 catchability_forcing.mat
 
-Matlab structure of catchability forcing scenarios.
+MATLAB structure of catchability forcing scenarios.
 
 price_forcing.mat
 
-Matlab structure of price forcing scenarios
+MATLAB structure of price forcing scenarios
 
 Licensing
 ---------
