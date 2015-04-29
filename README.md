@@ -34,7 +34,7 @@ restart file, and make plots of model variables.
 Usage and examples
 ------------------
 
-To run the BOATS model, run the boats0d_main.m script in MATLAB as:
+Run the BOATS model with the run script boats0d_main.m in MATLAB as:
 
 boats0d_main
 
