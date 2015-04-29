@@ -39,7 +39,7 @@ To run the BOATS model, run the boats0d_main.m script in MATLAB as:
 boats0d_main
 
 To change the ocean site at which the model is run, change the lat and lon parameters. For
-example, to run the model at a site in the Newtfoundland-Labrador Shelf Large
+example, to run the model at a site in the Newfoundland-Labrador Shelf Large
 Marine Ecosystem, change the lat and lon parameters in boats0d_main.m as:
 
 lat = 138; lon = 310;
