@@ -174,14 +174,28 @@ function boats0d_plot_base(boats)
    if size(boats.dfish,1)==boats.ntime
      fig2 = figure;
 
-     subplot(3,1,1)
+     subplot(2,3,1)
      plot(boats.year(1:end-1),squeeze(nansum(boats.harvest(1:end-1,:,:),3)*boats.parameters.spery),'-','linewidth',3)
      title('harvest by group','fontsize',12);
      xlabel('time (years)','fontsize',12);
      ylabel('harvest (gwB m^{-2} y^{-1}','fontsize',12);
      xlim([boats.year(1) boats.year(end)]);
 
-     subplot(3,1,2)
+     subplot(2,3,2)
+     plot(boats.year,boats.effort,'.-','markersize',10)
+     title('effort by group','fontsize',12);
+     xlabel('time (years)','fontsize',12);
+     ylabel('effort (W m^{-2})','fontsize',12);
+     xlim([boats.year(1) boats.year(end)]);
+     
+     subplot(2,3,3)
+     plot(boats.year,boats.revenue,'.-','markersize',10)
+     title('revenue by group','fontsize',12);
+     xlabel('time (years)','fontsize',12);
+     ylabel('revenue','fontsize',12);
+     xlim([boats.year(1) boats.year(end)]);
+
+     subplot(2,3,4)
      plot(log10(boats.fmass),squeeze(log10(boats.dharvest(end-1,:,:))),'.-','markersize',10)
      hold on;
      plot(log10(boats.fmass),squeeze(log10(nansum(boats.dharvest(end-1,:,:),2))),'.-k','markersize',10)
@@ -192,14 +206,14 @@ function boats0d_plot_base(boats)
      xlim([log10(boats.fmass(1)) log10(boats.fmass(end))]);
      ylim([-20 0]);
 
-     subplot(3,1,3)
+     subplot(2,3,5)
      plot(log10(boats.fmass),squeeze(boats.selectivity'),'.-','markersize',10)
      title('selectivity by group','fontsize',12);
      xlabel('size (log10 g)','fontsize',12);
      ylabel('selectivity','fontsize',12);
      xlim([log10(boats.fmass(1)) log10(boats.fmass(end))]);
      ylim([0 1.05]);
-    
+        
    end
  end 
 

@@ -38,7 +38,7 @@
 % Set data_monthly
  data_monthly = boats.parameters.data_monthly;
  
-%-----------------------------------------------------------------------------------------
+ %-----------------------------------------------------------------------------------------
 % Set forcing with observations (data_monthly) to ESM_forcing
 %-----------------------------------------------------------------------------------------
 
@@ -54,6 +54,40 @@
    ESM_forcing.mclim_thetao75_C       = squeeze(data_monthly.temp75(:,lat,lon));
    ESM_forcing.mclim_thetao75_K       = squeeze(data_monthly.temp75(:,lat,lon)) + boats.parameters.C_2_K;
 
+%-----------------------------------------------------------------------------------------
+% Set forcing with climate model output to ESM_forcing
+%-----------------------------------------------------------------------------------------
+       
+ else
+ 
+   % directory where forcing files are saved
+   dir_forcing = '/archive/dcarozza/DATA/CMIP5/';
+   % load forcing data structure
+   load([dir_forcing model '.mat']);
+   % rename model forcing structure
+   ESM_forcing = eval(model);
+   % clear original model forcing structure
+   eval(['clear ' model])
+   % convert units from molC m-2 s-1 to mmolC m-2 s-1
+   ESM_forcing.mclim_intpp            = (1000) * squeeze(ESM_forcing.mclim_intpp(lat,lon,:));
+   ESM_forcing.intpp                  = (1000) * squeeze(ESM_forcing.intpp(lat,lon,:));
+   % mclim_intpp
+   % limit to cap_npp
+   ESM_forcing.mclim_intpp            = min(cap_npp,ESM_forcing.mclim_intpp);
+   % intpp
+   % limit to cap_npp and use mask_land to keep land cells as NaNs
+   ESM_forcing.intpp                  = min(cap_npp,ESM_forcing.intpp);
+   % mclim_intpp_ed and intpp_ed
+   % convert units from mmolC m-2 s-1 to mmolC m-3 d-1
+   ESM_forcing.mclim_intpp_ed         = ESM_forcing.mclim_intpp * (sperd / 75);
+   ESM_forcing.intpp_ed               = ESM_forcing.intpp * (sperd / 75);
+   % mclim_thetao75_K and mclim_thetao75_C
+   ESM_forcing.mclim_thetao75_K       = squeeze(ESM_forcing.mclim_thetao75(lat,lon,:));
+   ESM_forcing.mclim_thetao75_C       = squeeze(ESM_forcing.mclim_thetao75(lat,lon,:)) - boats.parameters.C_2_K;
+   % thetao75_K and thetao75_C
+   ESM_forcing.thetao75_K             = squeeze(ESM_forcing.thetao75(lat,lon,:));
+   ESM_forcing.thetao75_C             = squeeze(ESM_forcing.thetao75(lat,lon,:)) - boats.parameters.C_2_K;
+ 
  end % if (strcmp(model,'data_monthly'))
  
 % Add ESM_forcing structure to boats
@@ -102,7 +136,7 @@ switch boats.parameters.lname_rest
     kappa_eppley   = boats.parameters.kappa_eppley;
     E_activation_A = boats.parameters.E_activation_A;
     k_Boltzmann    = boats.parameters.k_Boltzmann;
-    mortality00    = boats.parameters.mortality00;
+    zeta1          = boats.parameters.zeta1;
     Prod_star      = boats.parameters.Prod_star;
     mc_phy_l       = boats.parameters.mc_phy_l;
     mc_phy_s       = boats.parameters.mc_phy_s;
@@ -126,8 +160,8 @@ switch boats.parameters.lname_rest
   
     temp_dep_A = exp( (-E_activation_A/k_Boltzmann) .* (1./temp_fish - 1./boats.parameters.temp_ref_A));
     A          = (boats.parameters.A00/boats.parameters.spery)*temp_dep_A; % growth rate of Andersen and Beyer (2013, p. 18)
-    mortality0 = (mortality00/3)*A;
-
+    mortality0 = (exp(zeta1)/3)*A;
+    
     %-------------------------------------------------------------------------------------
     % calculate initial dfish
     dfish(1,:,:) = (1/nfish) * (1 - tro_sca) .* npp ./ ...

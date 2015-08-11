@@ -1,7 +1,7 @@
 function boats = boats0d_integrate(boats)
 
 %-----------------------------------------------------------------------------------------
-% boats2d_integrate_vec.m
+% boats0d_integrate.m
 %-----------------------------------------------------------------------------------------
 
 %-----------------------------------------------------------------------------------------
@@ -9,14 +9,14 @@ function boats = boats0d_integrate(boats)
 %-----------------------------------------------------------------------------------------
 
 % David A. Carozza* (david.carozza@gmail.com; corresponding author)
-% Daniele Bianchi   (danbian@uw.edu)
+% Daniele Bianchi   (dbianchi@atmos.ucla.edu)
 % Eric D. Galbraith (eric.galbraith@mcgill.ca)
 
 %-----------------------------------------------------------------------------------------
 % Introduction
 %-----------------------------------------------------------------------------------------
 
-% Bioeconomic Open-Access Trophic Size-Spectrum (BOATS) model based on the
+% BiOeconomic mArine Trophic Size-spectrum (BOATS) model based on the
 % McKendrick-von Foerster model for a mass-spectrum of fish biomass
 % with an open access economic framework to calculate effort and harvest.
 % Forced with monthly primary production and temperature data (from model or observations)
@@ -45,6 +45,12 @@ function boats = boats0d_integrate(boats)
 %-----------------------------------------------------------------------------------------
 % MAIN CODE
 %-----------------------------------------------------------------------------------------
+
+%-----------------------------------------------------------------------------------------
+% Add paths
+%-----------------------------------------------------------------------------------------
+
+addpath('/archive/dcarozza/boats_gen/')
 
 %-----------------------------------------------------------------------------------------
 % Load monthly observational data and grid structure
@@ -149,7 +155,7 @@ function boats = boats0d_integrate(boats)
  ppmr 	     = boats.parameters.ppmr;        % predator to prey mass ratio
  tro_sca     = log10(te)/log10(ppmr);        % trophic scaling
  b_allo      = boats.parameters.b_allo;		 % allometric scaling
- mortality00 = boats.parameters.mortality00; % constant mortality scaling
+ zeta1       = boats.parameters.zeta1;       % constant mortality scaling
  h_allo      = boats.parameters.h_allo;      % mass scaling of mortality
  eff_a       = boats.parameters.eff_a;       % efficiency of activity (Andersen and Beyer, 2013, p. 4)
  A00         = boats.parameters.A00;         % allometric growth rate (Andersen and Beyer, 2013, p. 4)
@@ -204,6 +210,7 @@ function boats = boats0d_integrate(boats)
  flux_out	 	  = nan(ntime,nfish,nfmass);
  flux_fish_growth = nan(ntime,nfish,nfmass);
  flux_in_rep      = nan(ntime,nfish);
+ flux_in_num_eggs = nan(ntime,nfish);
  flux_in_P        = nan(ntime,nfish);
  ena_regime       = nan(ntime,nfish,nfmass);
  rec_regime       = nan(ntime,nfish);
@@ -236,18 +243,17 @@ if idoecon==1
  sel_pos_1         = boats.parameters.sel_pos_1;				     % selectivity position shift 1
  sel_pos_2         = boats.parameters.sel_pos_2;				     % selectivity position shift 2
  sel_pos_3         = boats.parameters.sel_pos_3;				     % selectivity position shift 3
- sel_slope_1       = boats.parameters.sel_slope_1;			         % selectivity slope 1
- sel_slope_2       = boats.parameters.sel_slope_2;			         % selectivity slope 2
- sel_slope_3 	   = boats.parameters.sel_slope_3;			         % selectivity slope 3
+ sel_pos_scale     = boats.parameters.sel_pos_scale;                 % Selectivity position scale
+ sel_slope         = boats.parameters.sel_slope;			         % selectivity slope
 
 %-----------------------------------------------------------------------------------------
 % Harvesting selectivity
   
  selectivity = nan(nfish,nfmass);
    
- selectivity(1,:) = sigmoid_And_length(fmass,sel_pos_1*malpha(1),sel_slope_1);
- selectivity(2,:) = sigmoid_And_length(fmass,sel_pos_2*malpha(2),sel_slope_2);
- selectivity(3,:) = sigmoid_And_length(fmass,sel_pos_3*malpha(3),sel_slope_3);
+ selectivity(1,:) = sigmoid_And_length(fmass,sel_pos_scale*sel_pos_1*malpha(1),sel_slope);
+ selectivity(2,:) = sigmoid_And_length(fmass,sel_pos_scale*sel_pos_2*malpha(2),sel_slope);
+ selectivity(3,:) = sigmoid_And_length(fmass,sel_pos_scale*sel_pos_3*malpha(3),sel_slope);
 
 %-----------------------------------------------------------------------------------------
 % Initialize economics arrays
@@ -276,8 +282,6 @@ for indt = 1:ntime-1
 
   % local month
   local_month = ceil((mod(time(indt),spery)/spery)*12);
-
-  %% WILL NEED TO RETHINK THIS. AFTER INITIALIZE_2D
 
   %---------------------------------------------------------------------------------------
   % Physical and ecological forcings (NPP in mmolC m-2 s-1)
@@ -349,6 +353,7 @@ for indt = 1:ntime-1
   % minimum of en_input_P and en_input_vb
 
   en_input(indt,:,:)           = min(en_input_P(indt,:,:),en_input_vb(indt,:,:));
+%  en_input(indt,:,:)           = en_input_P(indt,:,:);
   en_input(indt,mask_notexist) = NaN;
 
   %---------------------------------------------------------------------------------------
@@ -382,12 +387,21 @@ for indt = 1:ntime-1
   flux_in_P(indt,:) = (npp/mphyto * (fmass_bc/mphyto).^(tro_sca-1) * fmass_bc ./ delfm(1)) * part_PP_b;
     
   %---------------------------------------------------------------------------------------
-  % Boundary condition based on recruitment (production and survival of eggs)
-
-  flux_in_rep(indt,:) = frac_fem*(fmass_bc/m_egg)*(egg_surv) .* ...
+  % Flux in of number of eggs produced
+  
+  flux_in_num_eggs(indt,:) = (frac_fem/m_egg) .* ...
     nansum( rep_alloc_frac .* squeeze(en_input(indt,:,:).*dfish(indt,:,:)) .* ...
     delfm_2d ./ fmass_2d,2) / delfm(1);
-    
+
+  %---------------------------------------------------------------------------------------
+  % Boundary condition based on recruitment (production and survival of eggs)
+  % If the flux of number of eggs is less than 0.001 eggs m-2 y-1
+  % then the flux due to the production and survival of eggs is zero
+
+  mask_eggs_low = (flux_in_num_eggs(indt,:) < 0.001/spery);
+  flux_in_rep(indt,:) = (fmass_bc*egg_surv) .* flux_in_num_eggs(indt,:);
+  flux_in_rep(indt,mask_eggs_low) = 0;
+
   %---------------------------------------------------------------------------------------
   % Boundary condition (Beverton-Holt form)
 
@@ -438,10 +452,9 @@ for indt = 1:ntime-1
   % Mass-specific mortality rate 
   % Calculate associated growth rate with mortality temperature dependence temp_dep_m
   % calculate mortality rate mortality0
-  % mortality00 is the exp(zeta_1) term from the model description
-    
-  A          = A0*temp_dep_m;
-  mortality0 = mortality00*A/3;
+  
+  A           = A0*temp_dep_m;
+  mortality0  = (exp(zeta1)/3)*A;
 
   %---------------------------------------------------------------------------------------  
   % Mortality rate 
@@ -499,12 +512,8 @@ for indt = 1:ntime-1
           qcatch0 = boats.parameters.qcatch0 * catchability_forcing.catch_p03_40y_p05_250y(indt);
         case 10 
           qcatch0 = boats.parameters.qcatch0 * catchability_forcing.catch_p04_150y(indt);  
-        case 11
-          qcatch0 = boats.parameters.qcatch0 * catchability_forcing.catch_p0_10y_p04_190y(indt);
-        case 12
-          qcatch0 = boats.parameters.qcatch0 * catchability_forcing.catch_p0_10y_p05_190y(indt);
         case 13
-          qcatch0 = boats.parameters.qcatch0 * catchability_forcing.catch_p0_50y_p05_190y(indt);
+          qcatch0 = boats.parameters.qcatch0 * catchability_forcing.catch_p0_100y_p05_200y(indt);
         case 14
           qcatch0 = boats.parameters.qcatch0 * catchability_forcing.catch_p03_250y(indt);
         case 15
@@ -603,12 +612,8 @@ for indt = 1:ntime-1
     %-------------------------------------------------------------------------------------
 
     dfish(indt+1,:,:) = dfish_temp(indt,:,:) - dharvest(indt,:,:) * dtts;
-%    mask_dfish_neg  = (squeeze(dfish(indt+1,:,:)) < 0);
-%    dfish(indt+1,mask_dfish_neg) = 0;
-
-    mask_group_biomass_small = ( nansum(squeeze(dfish(indt+1,:,:)) .* delfm_2d,2) < 0.1);    
-    mask_dfish_small = repmat(mask_group_biomass_small,[1 nfmass]);
-    dfish(indt+1,mask_dfish_small) = 0;
+    mask_dfish_neg  = (squeeze(dfish(indt+1,:,:)) < 0);
+    dfish(indt+1,mask_dfish_neg) = 0;
 
     %-------------------------------------------------------------------------------------
     % integrate effort [nfish]
@@ -681,6 +686,7 @@ for indt = 1:ntime-1
  boats.flux_fish_growth = flux_fish_growth;
  boats.flux_in_P        = flux_in_P;
  boats.flux_in_rep      = flux_in_rep;
+ boats.flux_in_num_eggs = flux_in_num_eggs;
  boats.flux_in          = flux_in;
  boats.flux_in_spawners = flux_in_spawners;
  boats.number_spawners  = number_spawners;
@@ -696,8 +702,8 @@ for indt = 1:ntime-1
 % Economic harvesting variables 
 
  if idoecon==1
-   boats.dfish_temp       = dfish_temp;
-   boats.fish_temp        = fish_temp; 
+   boats.dfish_temp    = dfish_temp;
+   boats.fish_temp     = fish_temp; 
    boats.selectivity   = selectivity;
    boats.dharvest      = dharvest;
    boats.harvest       = harvest;

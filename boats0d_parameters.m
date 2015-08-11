@@ -1,4 +1,4 @@
-function boats = boats0d_parameters_same(varargin)
+function boats = boats0d_parameters(varargin)
 
 %-----------------------------------------------------------------------------------------
 % boats0d_parameters.m
@@ -58,7 +58,7 @@ function boats = boats0d_parameters_same(varargin)
 % load data_monthly input data
  data_monthly_exist = exist('data_monthly','var');
  if (~data_monthly_exist) 
-   load data_monthly-review.mat
+   load /archive/dcarozza/DATA/data_monthly_orig.mat
  end
 
  A.data_monthly = data_monthly;
@@ -117,7 +117,7 @@ function boats = boats0d_parameters_same(varargin)
  A.ppmr        = 5000;						% predator to prey mass ratio
  A.tro_sca     = log10(A.te)/log10(A.ppmr);	% trophic scaling
  A.b_allo      = 0.66;						% allometric scaling
- A.mortality00 = 0.23;						% constant mortality scaling
+ A.zeta1       = 0.57;						% constant mortality scaling
  A.h_allo      = 0.5;						% mass scaling of mortality
  A.eff_a       = 0.8;						% efficiency of activity (Andersen and Beyer, 2013, p. 4)
  A.A00         = 4.46;						% allometric growth rate (Andersen and Beyer, 2013, p. 4)
@@ -146,12 +146,10 @@ function boats = boats0d_parameters_same(varargin)
  A.cost_effort_0      = A.cost_global/(A.effort_global*A.spery); % Cost per unit effort ($ W-1 s-1)
  A.k_e                = 1e-6; 									 % Fleet dynamic parameter (W $-1 s-1) 1 W of effort per dollar of net revenue per second
  A.sel_pos_1          = 1;										 % Selectivity position shift 1
- A.sel_pos_2          = 0.5;										 % Selectivity position shift 2
- A.sel_pos_3          = 0.25;										 % Selectivity position shift 3
-
- A.sel_slope_1        = 5;										 % Selectivity slope 1
- A.sel_slope_2        = 5;									     % Selectivity slope 2
- A.sel_slope_3        = 5;									     % Selectivity slope 3
+ A.sel_pos_2          = 0.5;									 % Selectivity position shift 2
+ A.sel_pos_3          = 0.25;									 % Selectivity position shift 3
+ A.sel_pos_scale      = 1;                                       % Selectivity position scale
+ A.sel_slope          = 18;										 % Selectivity slope
 
  A.harvest_start      = 0;										 % Year of starting harvest [y]
  A.qcatch0            = 0; 										 % Base catchability

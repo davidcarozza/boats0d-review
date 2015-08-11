@@ -1,7 +1,7 @@
 boats0d-review
 --------------
 
-BOATS-1.0: The Bioeconomic Open Access Trophic Size-spectrum model. A
+BOATS-1.0: The BiOeconomic mArine Trophic Size-spectrum model. A
 bioenergetically-constrained coupled fisheries-economics model for global
 studies of harvesting and climate change.
 
@@ -16,7 +16,7 @@ Authors
 
 David A. Carozza  (david.carozza@gmail.com; corresponding author)
 
-Daniele Bianchi   (danbian@uw.edu)
+Daniele Bianchi   (dbianchi@atmos.ucla.edu)
 
 Eric D. Galbraith (eric.galbraith@mcgill.ca)
 
@@ -125,6 +125,11 @@ MATLAB structure of catchability forcing scenarios.
 price_forcing.mat
 
 MATLAB structure of price forcing scenarios
+
+data_monthly-review.mat
+
+MATLAB structure of net primary production (NPP) and temperature (T) forcing data.
+
 
 Licensing
 ---------
