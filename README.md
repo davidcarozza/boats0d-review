@@ -113,10 +113,11 @@ parse_pv_pairs.m
 Parses sets of property value pairs, allows defaults. Used by
 boats0d_add_diagnostics.m, boats0d_parameters.m, and boats0d_time_average.m
 
-best_MCV2_P_S.mat
+best_MCV3.mat
 
-MATLAB structure of biological parameters from best Monte Carlo
-simulation V2, Pearson and Spearman.
+MATLAB structure of biological parameters from the 5 best Monte Carlo
+simulations of the Monte Carlo suite V3 (vectorized, i.e. only Large Marine
+Ecosystems, version 3).
 
 catchability_forcing.mat
 

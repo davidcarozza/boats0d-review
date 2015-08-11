@@ -58,7 +58,7 @@ function boats = boats0d_parameters(varargin)
 % load data_monthly input data
  data_monthly_exist = exist('data_monthly','var');
  if (~data_monthly_exist) 
-   load /archive/dcarozza/DATA/data_monthly_orig.mat
+   load data_monthly-review.matt
  end
 
  A.data_monthly = data_monthly;
