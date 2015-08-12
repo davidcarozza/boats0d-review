@@ -11,6 +11,14 @@ Version
 Zero-dimensional version (for a single patch of ocean / a single site) submitted
 for review to Geoscientific Model Development.
 
+Source
+------
+
+https://zenodo.org/badge/latestdoi/12481/davidcarozza/boats0d-review
+
+10.5281/zenodo.27700
+
+
 Authors
 -------
 
