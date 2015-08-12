@@ -131,6 +131,9 @@ data_monthly-review.mat
 
 MATLAB structure of net primary production (NPP) and temperature (T) forcing data.
 
+restart_sim_EBS.mat
+
+MATLAB structure of restart file for spinup run with East Bering Sea NPP and T.
 
 Licensing
 ---------
