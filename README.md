@@ -16,7 +16,7 @@ Source
 
 https://zenodo.org/badge/latestdoi/12481/davidcarozza/boats0d-review
 
-10.5281/zenodo.27700
+http://dx.doi.org/10.5281/zenodo.27700
 
 
 Authors
